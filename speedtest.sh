@@ -73,7 +73,7 @@ get_tier() {
         echo 11        # maximale Stufe bzw. Tier
     else
         # 101–199 -> 1, 200–299 -> 2, ..., 900–999 -> 9
-        echo $(( (s / 100 ))
+        echo $(( (s / 100 + 1))
     fi
 }
 
@@ -90,7 +90,7 @@ get_image_name() {
         4)  echo "Kangroo.jpg" ;;
         5)  echo "Delfin.jpg" ;;
         6)  echo "Hund.jpg" ;;
-        7)  echo "Hase.jp" ;;
+        7)  echo "Hase.jpg" ;;
         8)  echo "Pferd.jpg" ;;
         9)  echo "Vogel.jpg" ;;
         10)  echo "Loewe.jpg" ;;
@@ -130,7 +130,6 @@ if [[ -n "$image_file" && -f "$image_path" ]]; then
         --led-chain="$LED_CHAIN" \
         --led-gpio-mapping="$LED_GPIO_MAPPING" \
         "$image_path"
-else
 fi
 
 # Ende
