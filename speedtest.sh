@@ -6,11 +6,11 @@
 
 # Ordner mit Tierbildern
 # -> hier liegen: Schnecke.jpg, Schildkroete.jpg, Elefant.jpg, Kangroo.jpg, Delfin.jpg, Hund.jpg, Pferd.jpg, Vogel.jpg, Loewe.jpg, Leoprard.jpg
-IMAGE_DIR="$HOME/speedtest_tiere"
+IMAGE_DIR="$HOME/tiere"
 
 # Pfade zu deinen Programmen (falls sie woanders liegen, hier anpassen)
-TEXT_SCROLLER="./text-scroller"
-LED_IMAGE_VIEWER="./led-image-viewer"
+TEXT_SCROLLER="$HOME./rpi..../text-scroller"
+LED_IMAGE_VIEWER="$HOME/rpi...../led-image-viewer"
 
 # LED-Matrix-Parameter (ggf. anpassen)
 LED_ROWS=64
@@ -68,9 +68,9 @@ get_tier() {
     local s=$1
 
     if (( s <= 100 )); then
-        echo 0         # kein Tier
+        echo 1         # minimale Stufe bzw. Tier
     elif (( s >= 1000 )); then
-        echo 10        # maximale Stufe
+        echo 10        # maximale Stufe bzw. Tier
     else
         # 101–199 -> 1, 200–299 -> 2, ..., 900–999 -> 9
         echo $(( (s - 1) / 100 ))
@@ -93,7 +93,7 @@ get_image_name() {
         7)  echo "Pferd.jpg" ;;
         8)  echo "Vogel.jpg" ;;
         9)  echo "Loewe.jpg" ;;
-        10) echo "Leoprard.jpg" ;;  # Schreibweise wie von dir angegeben
+        10) echo "Leopard.jpg" ;;  
         *)  echo "" ;;
     esac
 }
@@ -107,6 +107,7 @@ sudo timeout 5 "$TEXT_SCROLLER" \
     -f ../fonts/9x18.bdf \
     -C255,0,0 \
     --led-chain="$LED_CHAIN" \
+    --led-gpio-mapping="$LED_GPIO_MAPPING" \
     -s0 "Down: ${download_mbps} Mbps"
 
 # 2) Upload-Wert scrollen
@@ -114,33 +115,21 @@ sudo timeout 5 "$TEXT_SCROLLER" \
     -f ../fonts/9x18.bdf \
     -C255,0,0 \
     --led-chain="$LED_CHAIN" \
+    --led-gpio-mapping="$LED_GPIO_MAPPING" \
     -s0 "Up: ${upload_mbps} Mbps"
 
-# 3) Tier-Logik + Bild
-if (( tier == 0 )); then
-    echo -e "\e[1;31mDownload <= 100 Mbps – kein Tier, Leitung ist noch am Aufwärmen 🐌\e[0m"
+image_file=$(get_image_name "$tier")
+image_path="$IMAGE_DIR/$image_file"
+
+if [[ -n "$image_file" && -f "$image_path" ]]; then
+    echo "Showing image on LED matrix: $image_path"
+    sudo timeout 10 "$LED_IMAGE_VIEWER" \
+        --led-rows="$LED_ROWS" \
+        --led-cols="$LED_COLS" \
+        --led-chain="$LED_CHAIN" \
+        --led-gpio-mapping="$LED_GPIO_MAPPING" \
+        "$image_path"
 else
-    # Helle Ausgabe für Tier 1, andere grün
-    if (( tier == 1 )); then
-        echo -e "\e[1;93mTier 1 aktiv! (${download_mbps} Mbps)\e[0m"
-    else
-        echo -e "\e[1;92mTier $tier aktiv! (${download_mbps} Mbps)\e[0m"
-    fi
-
-    image_file=$(get_image_name "$tier")
-    image_path="$IMAGE_DIR/$image_file"
-
-    if [[ -n "$image_file" && -f "$image_path" ]]; then
-        echo "Showing image on LED matrix: $image_path"
-        sudo timeout 10 "$LED_IMAGE_VIEWER" \
-            --led-rows="$LED_ROWS" \
-            --led-cols="$LED_COLS" \
-            --led-chain="$LED_CHAIN" \
-            --led-gpio-mapping="$LED_GPIO_MAPPING" \
-            "$image_path"
-    else
-        echo "Kein Bild gefunden für Tier $tier: $image_path"
-    fi
 fi
 
 # Ende
