@@ -70,10 +70,10 @@ get_tier() {
     if (( s <= 100 )); then
         echo 1         # minimale Stufe bzw. Tier
     elif (( s >= 1000 )); then
-        echo 10        # maximale Stufe bzw. Tier
+        echo 11        # maximale Stufe bzw. Tier
     else
         # 101–199 -> 1, 200–299 -> 2, ..., 900–999 -> 9
-        echo $(( (s - 1) / 100 ))
+        echo $(( (s / 100 ))
     fi
 }
 
@@ -90,11 +90,12 @@ get_image_name() {
         4)  echo "Kangroo.jpg" ;;
         5)  echo "Delfin.jpg" ;;
         6)  echo "Hund.jpg" ;;
-        7)  echo "Pferd.jpg" ;;
-        8)  echo "Vogel.jpg" ;;
-        9)  echo "Loewe.jpg" ;;
-        10) echo "Leopard.jpg" ;;  
-        *)  echo "" ;;
+        7)  echo "Hase.jp" ;;
+        8)  echo "Pferd.jpg" ;;
+        9)  echo "Vogel.jpg" ;;
+        10)  echo "Loewe.jpg" ;;
+        11)  echo "Leopard.jpg" ;;
+         *)  echo "" ;;
     esac
 }
 
