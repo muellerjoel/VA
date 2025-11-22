@@ -5,12 +5,12 @@
 # ======================================
 
 # Ordner mit Tierbildern
-# -> hier liegen: Schnecke.jpg, Schildkroete.jpg, Elefant.jpg, Kangroo.jpg, Delfin.jpg, Hund.jpg, Pferd.jpg, Vogel.jpg, Loewe.jpg, Leoprard.jpg
-IMAGE_DIR="$HOME/tiere"
+# -> hier liegen: Schnecke.jpg, Schildkroete.jpg, Elefant.jpg, Kangroo.jpg, Delfin.jpg, Hund.jpg, Hase.jpg, Pferd.jpg, Vogel.jpg, Loewe.jpg, Leopard.jpg
+IMAGE_DIR="$HOME/rpi-rgb-led-matrix/VA/animals"
 
 # Pfade zu deinen Programmen (falls sie woanders liegen, hier anpassen)
-TEXT_SCROLLER="$HOME./rpi..../text-scroller"
-LED_IMAGE_VIEWER="$HOME/rpi...../led-image-viewer"
+TEXT_SCROLLER="$HOME/rpi-rgb-led-matrix/utils/text-scroller"
+LED_IMAGE_VIEWER="$HOME/rpi-rgb-led-matrix/utils/led-image-viewer"
 
 # LED-Matrix-Parameter (ggf. anpassen)
 LED_ROWS=64
@@ -72,8 +72,8 @@ get_tier() {
     elif (( s >= 1000 )); then
         echo 11        # maximale Stufe bzw. Tier
     else
-        # 101–199 -> 1, 200–299 -> 2, ..., 900–999 -> 9
-        echo $(( (s / 100 + 1))
+        # 101–199 -> 2, 200–299 -> 3, ..., 900–999 -> 10
+        echo $(( s / 100 + 1 ))
     fi
 }
 
@@ -93,9 +93,9 @@ get_image_name() {
         7)  echo "Hase.jpg" ;;
         8)  echo "Pferd.jpg" ;;
         9)  echo "Vogel.jpg" ;;
-        10)  echo "Loewe.jpg" ;;
-        11)  echo "Leopard.jpg" ;;
-         *)  echo "" ;;
+        10) echo "Loewe.jpg" ;;
+        11) echo "Leopard.jpg" ;;
+        *)  echo "" ;;
     esac
 }
 
@@ -130,6 +130,8 @@ if [[ -n "$image_file" && -f "$image_path" ]]; then
         --led-chain="$LED_CHAIN" \
         --led-gpio-mapping="$LED_GPIO_MAPPING" \
         "$image_path"
+else
+    echo "Kein passendes Bild gefunden für Tier-Stufe $tier (Datei: '$image_path')"
 fi
 
 # Ende
